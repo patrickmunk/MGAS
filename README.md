@@ -1,2 +1,2 @@
 # MGAS
-MetaGenomic Analysis Tools.
+MetaGenomic Analysis Scripts.
