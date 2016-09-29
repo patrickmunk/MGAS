@@ -1,2 +1,0 @@
-# MGAS
-MetaGenomic Analysis Tools.
