@@ -33,7 +33,7 @@ if (is.null(opt$matrix)){
 
 ################# PROGRAM START #################
 
-df = read.delim(opt$matrix, header=TRUE, check.names = F)
+df = read.delim(opt$matrix, header=TRUE, check.names = F, sep="\t")
 
 #Get the sample data with size factors (if not supplied, will be normalized to matrix columns)
 if (is.null(opt$sample_data)){

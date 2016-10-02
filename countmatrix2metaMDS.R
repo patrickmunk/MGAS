@@ -27,7 +27,7 @@ if (is.null(opt$matrix)){
   print_help(opt_parser)
   stop("A matrix with read counts needs to be supplied", call.=FALSE)
 }
-df = read.delim(opt$matrix, header=TRUE)
+df = read.delim(opt$matrix, header=TRUE, sep="\t")
 
 #Choose to only include samples with more than x read counts
 df <- df[,colSums(df)>min_depth]

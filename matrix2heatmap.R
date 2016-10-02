@@ -1,6 +1,5 @@
 #!/usr/bin/env Rscript
-#This script is used to produce produce relative abundances from a matrix, using the DESeq2 rlog transformation
-#It uses the blind setting (transformation is blind to experimental design). This works poorly if there are strong experimental effects
+#This script is used to produce a pretty heatmap from a matrix of relative abundances
 
 #Generates python-like options used when the Rscript from a terminal. Requires the R-package 'optparse'
 library("optparse")
@@ -25,21 +24,26 @@ if (is.null(opt$matrix)){
   print_help(opt_parser)
   stop("A matrix with read counts needs to be supplied", call.=FALSE)
 }
-df = read.table(opt$matrix, header=TRUE)
+df = read.table(opt$matrix, header=TRUE, sep="\t")
 
 
 ################# PROGRAM START #################
 
-library(DESeq2)
+library(pheatmap)
 
-#Use DESeq2 for rlog transformation
-abundance_matrix <- df
-metadata <- data.frame(sample=cbind(colnames(abundance_matrix)),fakedata=c(1:ncol(abundance_matrix)),row.names=colnames(abundance_matrix))
+#Select subset of data for plotting
+df_sort <- df[order(rowSums(df),decreasing=T),]
+plot_names <- rownames(df_sort)[1:min(c(100,nrow(df_sort)))]
+df <- df[rownames(df) %in% plot_names,]
 
-dds <- DESeqDataSetFromMatrix(countData = abundance_matrix, colData = metadata, design =~1)
-rlog_dds <- rlog(dds,blind=T)
-relabundance <- assay(rlog_dds)
+#Calculate appropriate dimensions for exported figure
+hm_height <- round((nrow(df)/8)+4, digits=0)
+hm_width <- round((ncol(df)/5)+4, digits=0)
 
-#Export rlog-transformed relative abundances
-filename <- paste(prefix,"relabun_rlog.txt",sep="_")
-write.table(relabundance, file=filename, sep="\t", quote=F)
+#Produce heatmap
+filename <- paste(prefix,"heatmap.pdf",sep="_")
+pdf(file=filename, height=hm_height, width=hm_width)
+pheatmap(df, margins=c(8,8), scale="row", treeheight_row = 100, treeheight_col = 100)
+#Use "annotation_col = colannodf" for sidebars
+dev.off()
+

@@ -28,14 +28,14 @@ if (is.null(opt$matrix)){
   print_help(opt_parser)
   stop("A matrix with abundances needs to be supplied", call.=FALSE)
 }
-df = read.delim(opt$matrix, header=TRUE, check.names = F)
+df = read.delim(opt$matrix, header=TRUE, check.names = F, sep="\t")
 
 ##Check if cluster file is supplied
 if (is.null(opt$matrix)){
   print_help(opt_parser)
   stop("A cluster file with reference and cluster names needs to be supplied", call.=FALSE)
 }
-clustfile = read.delim(opt$clustfile, header=TRUE, check.names = F)
+clustfile = read.delim(opt$clustfile, header=TRUE, check.names = F, sep="\t")
 
 ################# PROGRAM START #################
 

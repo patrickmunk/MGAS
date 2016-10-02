@@ -24,7 +24,7 @@ if (is.null(opt$matrix)){
   print_help(opt_parser)
   stop("A matrix with read counts needs to be supplied", call.=FALSE)
 }
-df = read.table(opt$matrix, header=TRUE)
+df = read.table(opt$matrix, header=TRUE, sep="\t")
 
 
 ################# PROGRAM START #################
