@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-#This script is used to rarify a count matrix and perform multi-dimensional scaling analysis
+#This script is used to calculate diversity statistics for a count matrix and draw rarefaction curves
 
 #Generates python-like options used when the Rscript from a terminal. Requires the R-package 'optparse'
 library("optparse")
@@ -24,7 +24,7 @@ if (is.null(opt$matrix)){
   print_help(opt_parser)
   stop("A matrix with read counts needs to be supplied", call.=FALSE)
 }
-df = read.table(opt$matrix, header=TRUE, sep="\t")
+df = read.table(opt$matrix, header=TRUE, sep="\t", row.names=1)
 
 
 ################# PROGRAM START #################

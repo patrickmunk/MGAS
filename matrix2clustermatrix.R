@@ -28,7 +28,7 @@ if (is.null(opt$matrix)){
   print_help(opt_parser)
   stop("A matrix with abundances needs to be supplied", call.=FALSE)
 }
-df = read.delim(opt$matrix, header=TRUE, check.names = F, sep="\t")
+df = read.delim(opt$matrix, header=TRUE, check.names = F, sep="\t", row.names=1)
 
 ##Check if cluster file is supplied
 if (is.null(opt$matrix)){
@@ -46,6 +46,9 @@ abundance_matrix <- df
 cluster_ref <- clustfile
 colnames(cluster_ref)[1:2] <- c("ref_name","clust_name")
 
+#Remove any features without data
+abundance_matrix <- abundance_matrix[rowSums(abundance_matrix)>0,]
+
 #Determine if there are features in the data not included in the cluster file
 not_in_cluster <- setdiff(rownames(abundance_matrix),cluster_ref$ref_name)
 if (length(setdiff(rownames(abundance_matrix),cluster_ref$ref_name))>0) {
@@ -60,8 +63,6 @@ abundance_matrix <- merge(abundance_matrix, cluster_ref, by="ref_name")
 abundance_matrix <- data.table(abundance_matrix[,2:ncol(abundance_matrix)])
 abundance_matrix <- melt(abundance_matrix, id.vars = "clust_name")
 abundance_matrix <- data.frame(dcast.data.table(abundance_matrix, clust_name ~ variable, value.var = "value", fun.aggregate = sum, na.rm = TRUE), check.names=FALSE)
-
-
 
 #Write out table of aggregated abundances
 filename <- paste(prefix,"FPKM_table.txt",sep="_")

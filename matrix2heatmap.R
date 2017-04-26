@@ -24,7 +24,7 @@ if (is.null(opt$matrix)){
   print_help(opt_parser)
   stop("A matrix with read counts needs to be supplied", call.=FALSE)
 }
-df = read.table(opt$matrix, header=TRUE, sep="\t")
+df = read.table(opt$matrix, header=TRUE, sep="\t", check.names=F, row.names=1)
 
 
 ################# PROGRAM START #################
@@ -33,17 +33,32 @@ library(pheatmap)
 
 #Select subset of data for plotting
 df_sort <- df[order(rowSums(df),decreasing=T),]
-plot_names <- rownames(df_sort)[1:min(c(100,nrow(df_sort)))]
+df <- df[apply(df,1,median)>0,]
+plot_names <- rownames(df_sort)[1:min(c(50,nrow(df_sort)))]
 df <- df[rownames(df) %in% plot_names,]
 
 #Calculate appropriate dimensions for exported figure
 hm_height <- round((nrow(df)/8)+4, digits=0)
 hm_width <- round((ncol(df)/5)+4, digits=0)
 
-#Produce heatmap
+#Produce heatmaps
 filename <- paste(prefix,"heatmap.pdf",sep="_")
-pdf(file=filename, height=hm_height, width=hm_width)
-pheatmap(df, margins=c(8,8), scale="row", treeheight_row = 100, treeheight_col = 100)
-#Use "annotation_col = colannodf" for sidebars
+pdf(file=filename, height=hm_height, width=hm_width, onefile=FALSE)
+pheatmap(df, margins=c(8,8), scale="none", treeheight_row = 100, treeheight_col = 100)
+dev.off()
+
+filename <- paste(prefix,"log10_heatmap.pdf",sep="_")
+pdf(file=filename, height=hm_height, width=hm_width, onefile=FALSE)
+pheatmap(log10(df+1), margins=c(8,8), scale="none", treeheight_row = 100, treeheight_col = 100)
+dev.off()
+
+filename <- paste(prefix,"log10_corclust_heatmap.pdf",sep="_")
+pdf(file=filename, height=hm_height, width=hm_width, onefile=FALSE)
+pheatmap(log10(df+1), margins=c(8,8), scale="none", treeheight_row = 100, treeheight_col = 100, clustering_distance_rows="correlation", clustering_distance_cols="correlation")
+dev.off()
+
+filename <- paste(prefix,"rowscale_heatmap.pdf",sep="_")
+pdf(file=filename, height=hm_height, width=hm_width, onefile=FALSE)
+pheatmap(log10(df+1), margins=c(8,8), scale="row", treeheight_row = 100, treeheight_col = 100)
 dev.off()
 

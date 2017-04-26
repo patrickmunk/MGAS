@@ -87,7 +87,9 @@ abundance_matrix_rpm <- sweep(abundance_matrix, 2, metadata[,2], `/`)*10^6
 
 #Normalize each gene row with the length of the reference gene minus the average fragment size
 #feature_description$hit_probability <- as.numeric(as.character(feature_description[,3])) - (insert_size-(mapping_ends*min_alignment))
-feature_description$hit_probability <- as.numeric(as.character(feature_description[,3])) - (insert_size-(mapping_ends*read_len)+(mapping_ends*min_alignment))
+#feature_description$hit_probability <- as.numeric(as.character(feature_description[,3])) - (insert_size-(mapping_ends*read_len)+(mapping_ends*min_alignment))
+feature_description$hit_probability <- as.numeric(as.character(feature_description[,3]))
+
 abundance_matrix_rpm <- sweep(abundance_matrix_rpm, 1, feature_description$hit_probability, `/`)*1000
 
 #Write out FPKM values

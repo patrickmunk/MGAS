@@ -13,7 +13,7 @@ opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser);
 
 #Set parameters
-min_depth <- 10000
+#min_depth <- 10000
 
 #Determine the prefix to be used for output files
 if (is.null(opt$prefix)){
@@ -30,18 +30,18 @@ if (is.null(opt$matrix)){
 df = read.delim(opt$matrix, header=TRUE, sep="\t")
 
 #Choose to only include samples with more than x read counts
-df <- df[,colSums(df)>min_depth]
+#df <- df[,colSums(df)>min_depth]
 
 #Rarefies matrix to the level of the sample with least data
 library(vegan)
-df <- t(rrarefy(t(df),sample=min(colSums(df))))
+#df <- t(rrarefy(t(df),sample=min(colSums(df))))
 
 #Export rarefied data matrix (obs: low samples excluded)
 filename <- paste(prefix,"rarefy_matrix.txt",sep="_")
-write.table(df, file=filename, row.names=TRUE, quote=F, sep="\t")
+#write.table(df, file=filename, row.names=TRUE, quote=F, sep="\t")
 
-#Remove rows with too little data (median = 0)
-df <- df[apply(df,1,median)>0,]
+#Remove empty rows
+df <- df[apply(df,1,max)>0,]
 
 #Perform non-metric multidimensional scaling
 data_NMDS=metaMDS(df, k=3, trymax=50)
